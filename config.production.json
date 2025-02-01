@@ -1,0 +1,24 @@
+{
+  "url": "https://app_da23f58e-59df-43ee-8216-1b5a3be0652e.cleverapps.io",
+  "server": {
+    "port": 8080,
+    "host": "0.0.0.0"
+  },
+  "database": {
+    "client": "mysql"
+  },
+  "mail": {
+    "transport": "Direct"
+  },
+  "process": "local",
+  "logging": {
+    "level": "debug",
+    "transports": [
+      "stdout"
+    ]
+  },
+  "paths": {
+    "contentPath": "../../../content/"
+  }
+}
+
