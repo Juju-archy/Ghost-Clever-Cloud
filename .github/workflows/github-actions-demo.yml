@@ -13,15 +13,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Install Clever Cloud CLI
-        run: npm install -g clever-tools
-
-      - name: Login to Clever Cloud
-        run: clever login --token ${{ secrets.CLEVER_TOKEN }} --secret ${{ secrets.CLEVER_SECRET }}
-
-      - name: Link Clever Cloud app
-        run: clever link ${{ secrets.CLEVER_APP_ID }}
-
       - name: Deploy to Clever Cloud
-        run: clever deploy
+        uses: 47ng/actions-clever-cloud@v2.0.0
+        with:
+          appID: ${{ secrets.CLEVER_APP_ID }}
+        env:
+          CLEVER_TOKEN: ${{ secrets.CLEVER_TOKEN }}
+          CLEVER_SECRET: ${{ secrets.CLEVER_SECRET }}
 
