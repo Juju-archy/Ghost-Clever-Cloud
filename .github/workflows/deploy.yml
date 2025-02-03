@@ -1,0 +1,49 @@
+name: Deploy to Clever Cloud
+
+on:
+  push:
+    branches:
+      - main  # Déploiement automatique sur Clever Cloud à chaque push sur main
+
+  pull_request_target:
+    types: [opened, closed, synchronize, reopened]  # Déploiement automatique de Review Apps sur les PRs
+    branches:
+      - main
+
+jobs:
+  deploy_main:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Deploy to Clever Cloud
+        uses: 47ng/actions-clever-cloud@v2.0.0
+        with:
+          appID: ${{ secrets.CLEVER_APP_ID }}
+        env:
+          CLEVER_TOKEN: ${{ secrets.CLEVER_TOKEN }}
+          CLEVER_SECRET: ${{ secrets.CLEVER_SECRET }}
+
+  deploy_review_app:
+    if: github.event_name == 'pull_request_target'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Create Review App
+        uses: CleverCloud/clever-cloud-review-app@latest
+        env:
+          CLEVER_SECRET: ${{ secrets.CLEVER_SECRET }}
+          CLEVER_TOKEN: ${{ secrets.CLEVER_TOKEN }}
+          ORGA_ID: orga_9ad425aa-f20c-4da8-a623-024a445c4d81
+        with:
+          type: 'node' 
+          set-env: true  # Active l’injection des variables d’environnement
+
