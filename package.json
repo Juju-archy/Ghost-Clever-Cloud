@@ -3,7 +3,7 @@
     "version": "0.1.0",
     "description": "",
     "scripts": {
-        "start": "ghost start --dir ghost"
+        "start": "ghost run --dir ghost"
     },
     "dependencies": {
         "ghost-cli": "^1.20.1",
