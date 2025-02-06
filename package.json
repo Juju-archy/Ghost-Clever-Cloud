@@ -7,7 +7,6 @@
     },
     "dependencies": {
         "ghost-cli": "^1.20.1",
-        "ghost-s3-compat": "^2.1.0",
         "ghost-storage-adapter-s3": "^2.8.0"
     },
     "engines": {
