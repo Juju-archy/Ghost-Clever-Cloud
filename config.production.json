@@ -1,5 +1,5 @@
 {
-  "url": "https://ghosttest.cleverapps.io/",
+  "url": "https://ghostV2.cleverapps.io/",
   "server": {
     "port": 8080,
     "host": "0.0.0.0"
