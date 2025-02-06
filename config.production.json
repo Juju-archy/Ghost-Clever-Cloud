@@ -8,9 +8,7 @@
     "client": "mysql"
   },
   "storage": {
-    "active": "s3",
-    "media": "s3",
-    "files": "s3"
+    "active": "ghost-s3"
   },
   "mail": {
     "transport": "SMTP"
