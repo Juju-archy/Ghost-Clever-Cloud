@@ -5,4 +5,4 @@ cd ghost
 ghost install local
 ghost stop
 cp ../config.production.json .
-cp -r ../content/adapters/ghost-s3 content/adapter
+cp ../content/adapters/ghost-s3 ./content/adapters
