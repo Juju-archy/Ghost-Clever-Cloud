@@ -7,8 +7,11 @@
   "database": {
     "client": "mysql"
   },
+  "storage": {
+    "active": "s3"
+  },
   "mail": {
-    "transport": "Direct"
+    "transport": "SMTP"
   },
   "process": "local",
   "logging": {
