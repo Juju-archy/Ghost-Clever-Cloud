@@ -54,12 +54,17 @@ clever domain add mysuperblog.cleverapps.io
 À la racine du projet, créez un fichier `.clevercloud.sh` et ajoutez le code suivant :
 ```sh
 #!/bin/sh
-npm install -g ghost-cli # Installe Ghost-CLI sur Clever Cloud
-mkdir ghost # Crée un dossier pour l'instance Ghost
+npm install -g ghost-cli # install ghost-cli on Clever Cloud
+mkdir ghost # create a folder for a new local instance of Ghost
 cd ghost
 ghost install local
 ghost stop
-cp ../config.production.json . # Copie la configuration de production
+cp ../config.production.json .
+npm install ghost-storage-adapter-s3
+mkdir -p ./content/adapters/storage
+cp -r ../node_modules/ghost-storage-adapter-s3 content/adapters/storage/s3
+rm -R content/themes/source
+cp ../content/themes/source content/themes/
 ```
 
 ### 4. Configuration de Ghost
@@ -67,7 +72,7 @@ cp ../config.production.json . # Copie la configuration de production
 Créez un fichier `config.production.json` à la racine :
 ```json
 {
-  "url": "https://<your_app_url>",
+  "url": "https://ghostV2.cleverapps.io/",
   "server": {
     "port": 8080,
     "host": "0.0.0.0"
@@ -75,8 +80,11 @@ Créez un fichier `config.production.json` à la racine :
   "database": {
     "client": "mysql"
   },
+  "storage": {
+    "active": "s3"
+  },
   "mail": {
-    "transport": "Direct"
+    "transport": "SMTP"
   },
   "process": "local",
   "logging": {
@@ -99,7 +107,59 @@ clever env set database__connection__port <ADDON_PORT>
 clever env set url https://<domain_URL_blog>
 ```
 
-### 5. Création des fichiers nécessaires
+### 5. Configuration et ajout de Cellar (Stockage S3 sur Clever Cloud)
+
+Créez un Cellar et liez-le à votre application :
+```sh
+clever addon create cellar-addon --plan s_sml <cellar-app>
+clever service link-addon <cellar-app>
+```
+
+Ajoutez les variables d'environnement pour configurer Ghost avec Cellar :
+```sh
+clever env set storage__s3__accessKeyId <CELLAR_ACCESS_KEY>
+clever env set storage__s3__secretAccessKey <CELLAR_SECRET_KEY>
+clever env set storage__s3__bucket <your-bucket>
+clever env set storage__s3__region <CELLAR_REGION>
+```
+
+### 6. Modification de la policy du Cellar
+
+Ajoutez la policy suivante pour donner un [accès public en lecture](https://www.clever-cloud.com/developers/doc/addons/cellar/#public-bucket-policy) :
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": "s3:ListBucket",
+            "Resource": "arn:aws:s3:::<bucket>"
+        },
+        {
+            "Sid": "VisualEditor1",
+            "Effect": "Allow",
+            "Action": [
+                "s3:PutObject",
+                "s3:GetObject",
+                "s3:PutObjectVersionAcl",
+                "s3:DeleteObject",
+                "s3:PutObjectAcl"
+            ],
+            "Resource": "arn:aws:s3:::<bucket>/*"
+        },
+        {
+            "Sid": "PublicReadAccess",
+            "Effect": "Allow",
+            "Action": "s3:GetObject",
+            "Resource": "arn:aws:s3:::<bucket>/*",
+            "Principal": "*"
+        }
+    ]
+}
+```
+
+### 7. Création des fichiers nécessaires
 
 Créez un `package.json` minimal :
 ```json
@@ -123,7 +183,7 @@ current
 versions
 ```
 
-### 6. Déploiement sur Clever Cloud
+### 8. Déploiement sur Clever Cloud
 
 Initialisez Git, ajoutez les fichiers et déployez l'application :
 ```sh
@@ -136,5 +196,4 @@ clever deploy
 ## Remarque
 
 Pour un petit blog, les plans XS ou S sont largement suffisants pour l'application Node.js.
-
 
