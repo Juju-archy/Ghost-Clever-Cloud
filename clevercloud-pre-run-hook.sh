@@ -9,4 +9,4 @@ npm install ghost-storage-adapter-s3
 mkdir -p ./content/adapters/storage
 cp -r ../node_modules/ghost-storage-adapter-s3 content/adapters/storage/s3
 rm -R content/themes/source
-cp ../content/themes/source content/themes/
+cp -r ../content/themes/source content/themes/
