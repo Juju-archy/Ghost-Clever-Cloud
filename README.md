@@ -213,4 +213,3 @@ clever deploy
 ## Remarque
 
 Pour un petit blog, les plans XS ou S sont largement suffisants pour l'application Node.js.
-
